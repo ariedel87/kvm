@@ -305,6 +305,9 @@ interface SettingsState {
 
   keyboardLayout: string;
   setKeyboardLayout: (layout: string) => void;
+
+  showPressedKeys: boolean;
+  setShowPressedKeys: (show: boolean) => void;
 }
 
 export const useSettingsStore = create(
@@ -336,6 +339,9 @@ export const useSettingsStore = create(
 
       keyboardLayout: "en-US",
       setKeyboardLayout: layout => set({ keyboardLayout: layout }),
+
+      showPressedKeys: true,
+      setShowPressedKeys: show => set({ showPressedKeys: show }),
     }),
     {
       name: "settings",

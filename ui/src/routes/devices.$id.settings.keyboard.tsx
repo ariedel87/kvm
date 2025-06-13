@@ -5,6 +5,7 @@ import { useJsonRpc } from "@/hooks/useJsonRpc";
 import notifications from "@/notifications";
 import { SettingsPageHeader } from "@components/SettingsPageheader";
 import { layouts } from "@/keyboardLayouts";
+import { Checkbox } from "@/components/Checkbox";
 
 import { SelectMenuBasic } from "../components/SelectMenuBasic";
 
@@ -14,6 +15,10 @@ export default function SettingsKeyboardRoute() {
   const keyboardLayout = useSettingsStore(state => state.keyboardLayout);
   const setKeyboardLayout = useSettingsStore(
     state => state.setKeyboardLayout,
+  );
+  const showPressedKeys = useSettingsStore(state => state.showPressedKeys);
+  const setShowPressedKeys = useSettingsStore(
+    state => state.setShowPressedKeys,
   );
 
   // this ensures we always get the original en-US if it hasn't been set yet
@@ -76,6 +81,19 @@ export default function SettingsKeyboardRoute() {
           Pasting text sends individual key strokes to the target device. The keyboard layout determines which key codes are being sent. Ensure that the keyboard layout in JetKVM matches the settings in the operating system.
         </p>
       </div>
+      
+      <div className="space-y-4">
+        <SettingsItem
+          title="Show Pressed Keys"
+          description="Display currently pressed keys in the status bar"
+        >
+          <Checkbox
+            checked={showPressedKeys}
+            onChange={e => setShowPressedKeys(e.target.checked)}
+          />
+        </SettingsItem>
+      </div>
+  
     </div>
   );
 }
