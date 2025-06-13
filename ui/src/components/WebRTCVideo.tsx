@@ -47,6 +47,11 @@ export default function WebRTCVideo() {
     clientHeight: videoClientHeight,
   } = useVideoStore();
 
+  // Video enhancement settings
+  const videoSaturation = useSettingsStore(state => state.videoSaturation);
+  const videoBrightness = useSettingsStore(state => state.videoBrightness);
+  const videoContrast = useSettingsStore(state => state.videoContrast);
+
   // RTC related states
   const peerConnection = useRTCStore(state => state.peerConnection);
 
@@ -686,6 +691,9 @@ export default function WebRTCVideo() {
                           playsInline
                           disablePictureInPicture
                           controlsList="nofullscreen"
+                          style={{
+                            filter: `saturate(${videoSaturation}) brightness(${videoBrightness}) contrast(${videoContrast})`,
+                          }}
                           className={cx(
                             "max-h-full min-h-[384px] max-w-full min-w-[512px] bg-black/50 object-contain transition-all duration-1000",
                             {
