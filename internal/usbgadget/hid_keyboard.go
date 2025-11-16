@@ -504,3 +504,31 @@ func (u *UsbGadget) KeypressReport(key byte, press bool) error {
 
 	return err
 }
+
+// WakeUpDevice sends a keyboard signal to wake up the connected device.
+// This simulates pressing and releasing a shift key, which is non-invasive
+// and commonly used to wake devices from sleep, similar to how a USB hub
+// startup button would work.
+func (u *UsbGadget) WakeUpDevice() error {
+	u.log.Info().Msg("sending wake-up signal to device")
+
+	// Press left shift key
+	_, err := u.keypressReport(LeftShift, true)
+	if err != nil {
+		u.log.Error().Err(err).Msg("failed to send wake-up key press")
+		return fmt.Errorf("failed to send wake-up key press: %w", err)
+	}
+
+	// Brief delay to ensure the signal is registered
+	time.Sleep(50 * time.Millisecond)
+
+	// Release left shift key
+	_, err = u.keypressReport(LeftShift, false)
+	if err != nil {
+		u.log.Error().Err(err).Msg("failed to release wake-up key")
+		return fmt.Errorf("failed to release wake-up key: %w", err)
+	}
+
+	u.log.Info().Msg("wake-up signal sent successfully")
+	return nil
+}

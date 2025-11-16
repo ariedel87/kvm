@@ -78,6 +78,11 @@ func rpcGetKeysDownState() (state usbgadget.KeysDownState) {
 	return gadget.GetKeysDownState()
 }
 
+func rpcWakeUpDevice() error {
+	usbLogger.Info().Msg("Wake-up device request received via RPC")
+	return gadget.WakeUpDevice()
+}
+
 var (
 	usbState     = "unknown"
 	usbStateLock sync.Mutex

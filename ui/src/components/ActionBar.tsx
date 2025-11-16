@@ -9,16 +9,19 @@ import { cx } from "@/cva.config";
 import {
   useHidStore,
   useMountMediaStore,
+  useRTCStore,
   useSettingsStore,
   useUiStore,
 } from "@hooks/stores";
 import { useDeviceUiNavigation } from "@hooks/useAppNavigation";
+import { JsonRpcResponse, useJsonRpc } from "@hooks/useJsonRpc";
 import { Button } from "@components/Button";
 import Container from "@components/Container";
 import PasteModal from "@components/popovers/PasteModal";
 import WakeOnLanModal from "@components/popovers/WakeOnLan/Index";
 import MountPopopover from "@components/popovers/MountPopover";
 import ExtensionPopover from "@components/popovers/ExtensionPopover";
+import notifications from "@/notifications";
 import { m } from "@localizations/messages.js";
 
 export default function Actionbar({
@@ -31,6 +34,20 @@ export default function Actionbar({
   const { setDisableVideoFocusTrap, terminalType, setTerminalType, toggleSidebarView } = useUiStore();
   const { remoteVirtualMediaState } = useMountMediaStore();
   const { developerMode } = useSettingsStore();
+  const { rpcDataChannel } = useRTCStore();
+  const { send } = useJsonRpc();
+
+  const onWakeUpDevice = useCallback(() => {
+    if (rpcDataChannel?.readyState !== "open") return;
+
+    send("wakeUpDevice", {}, (resp: JsonRpcResponse) => {
+      if ("error" in resp) {
+        notifications.error(m.wake_device_failed());
+      } else {
+        notifications.success(m.wake_device_success());
+      }
+    });
+  }, [rpcDataChannel?.readyState, send]);
 
   // This is the only way to get a reliable state change for the popover
   // at time of writing this there is no mount, or unmount event for the popover
@@ -191,6 +208,30 @@ export default function Actionbar({
                 }}
               </PopoverPanel>
             </Popover>
+          </div>
+          <div>
+            <Button
+              size="XS"
+              theme="light"
+              text={m.action_bar_wake_device()}
+              onClick={onWakeUpDevice}
+              LeadingIcon={({ className }) => (
+                <svg
+                  className={className}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z" />
+                  <path d="M12 12v5" />
+                  <path d="m15 14-3-3-3 3" />
+                </svg>
+              )}
+            />
           </div>
           <div className="hidden lg:block">
             <Button

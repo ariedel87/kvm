@@ -1191,6 +1191,7 @@ var rpcHandlers = map[string]RPCHandler{
 	"getJigglerConfig":       {Func: rpcGetJigglerConfig},
 	"getTimezones":           {Func: rpcGetTimezones},
 	"sendWOLMagicPacket":     {Func: rpcSendWOLMagicPacket, Params: []string{"macAddress"}},
+	"wakeUpDevice":           {Func: rpcWakeUpDevice},
 	"getStreamQualityFactor": {Func: rpcGetStreamQualityFactor},
 	"setStreamQualityFactor": {Func: rpcSetStreamQualityFactor, Params: []string{"factor"}},
 	"getAutoUpdateState":     {Func: rpcGetAutoUpdateState},
